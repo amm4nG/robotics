@@ -1,0 +1,84 @@
+#include <Servo.h> // librray servo
+
+Servo middleServo; // inisialisasi servo bagian tengah
+Servo rightServo; // bagian kanan
+Servo leftServo; // bagian kiri
+Servo frontServo; // bagian depan
+
+
+int leftX = 0; // konek ke pin 0
+int leftY = 1;
+int rightX = 3;
+int rightY = 2;
+
+int valLeftX; // membaca nilai dari joystick bagian kiri x atau horizotal
+int valLeftY; // kiri joystick y atau vertikal
+int valRightX;
+int valRightY;
+
+int prevValLeftX = 90; // batas pergerakan 
+int prevValLeftY = 45;
+int prevValRightX = 90;
+int prevValRightY = 90;
+
+int stepSize = 1; // Nilai penambahan step
+
+void setup() {
+  // Serial.begin(9600);
+
+  middleServo.attach(11);
+  rightServo.attach(10);
+  leftServo.attach(9);
+  frontServo.attach(5);
+}
+
+void loop() {
+  valLeftX = analogRead(leftX); // joystick kiri x
+  valLeftY = analogRead(leftY);
+  valRightX = analogRead(rightX);
+  valRightY = analogRead(rightY);
+
+  valLeftX = map(valLeftX, 0, 1023, 180, 0); // joystick kiri x
+  valLeftY = map(valLeftY, 0, 1023, 0, 90);
+  valRightX = map(valRightX, 0, 1023, 0, 180);
+  valRightY = map(valRightY, 0, 1023, 180, 0);
+
+  // joystick left x
+  if (valLeftX > 100 && prevValLeftX < 180) {
+      prevValLeftX += stepSize;
+  } else if (valLeftX < 85 && prevValLeftX > 0) {
+    prevValLeftX -= stepSize;
+  } 
+
+  // joystick left y
+  if (valLeftY > 50 && prevValLeftY < 90) {
+      prevValLeftY += stepSize;
+  } else if (valLeftY < 40 && prevValLeftY > 0) {
+    prevValLeftY -= stepSize;
+  } 
+
+  // joystick right y
+  if (valRightY > 100 && prevValRightY < 180) {
+      prevValRightY += stepSize;
+  } else if (valRightY < 85 && prevValRightY > 0) {
+    prevValRightY -= stepSize;
+  } 
+
+  // joystick Right x
+  if (valRightX > 100 && prevValRightX < 180) {
+      prevValRightX += stepSize;
+  } else if (valRightX < 85 && prevValRightX > 0) {
+    prevValRightX -= stepSize;
+  } 
+
+  middleServo.write(prevValLeftX); // joystick left x
+  leftServo.write(prevValLeftY); // joystick left y
+  rightServo.write(prevValRightY); // joystick right y
+  frontServo.write(prevValRightX); // joystick right x
+
+  delay(7);
+}
+
+
+
+

@@ -16,7 +16,7 @@ int valLeftY; // kiri joystick y atau vertikal
 int valRightX;
 int valRightY;
 
-int prevValLeftX = 90; // batas pergerakan 
+int prevValLeftX = 90; // nilai awal
 int prevValLeftY = 45;
 int prevValRightX = 90;
 int prevValRightY = 90;

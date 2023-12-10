@@ -10,8 +10,11 @@
 #define triggerKiri 6
 #define echoKiri 7
 
+int ledGreen = 1; // lampu indikator hijau
+int ledRed = 2; // lampu indikator merah
+
 // long durationDepan, jarakDepan, durationKanan, jarakKanan, durationKiri, jarakKiri;
-long durationDepan, durationKanan, durationKiri; // deklarasi variable
+long durationDepan, durationKanan, durationKiri;  // deklarasi variable
 
 // fungsi kendali motor kiri
 void motorKiri(int a) {
@@ -19,8 +22,8 @@ void motorKiri(int a) {
     digitalWrite(dira, 0);  // putar motor berlawanan arah jarum jam
     analogWrite(pwma, a);   // setting kecepatannya sesuai dengan nilai parameter a
   } else if (a < 0) {
-    digitalWrite(dira, 1);  // putar motor berlawanan arah jarum jam
-    analogWrite(pwma, a + 255); // untuk memastikan nilai pwm nya tetap bernilai positif
+    digitalWrite(dira, 1);       // putar motor berlawanan arah jarum jam
+    analogWrite(pwma, a + 255);  // untuk memastikan nilai pwm nya tetap bernilai positif
   }
 }
 
@@ -36,7 +39,7 @@ void motorKanan(int b) {
 }
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(9600); // mulai pembacaan pada serial monitor
 
   pinMode(dira, OUTPUT);
   pinMode(dirb, OUTPUT);
@@ -49,6 +52,9 @@ void setup() {
 
   pinMode(triggerKiri, OUTPUT);
   pinMode(echoKiri, INPUT);
+
+  pinMode(ledGreen, OUTPUT);
+  pinMode(ledRed, OUTPUT);
 }
 
 void loop() {
@@ -60,6 +66,8 @@ void loop() {
   // Serial.print("Right : ");
   // Serial.println(funcDistanceRight());
   // delay(200);
+  digitalWrite(ledGreen, HIGH); // lampu hijau nyala
+  digitalWrite(ledRed, LOW); // lampu merah mati
   if (funcDistanceFront() > 15) {
     motorKanan(-255);
     motorKiri(255);
@@ -67,6 +75,8 @@ void loop() {
   } else if (funcDistanceFront() < 15 && funcDistanceLeft() < 15 && funcDistanceRight() < 15) {
     motorKanan(100);
     motorKiri(-100);
+    digitalWrite(ledGreen, LOW); // lampu hijau mati
+    digitalWrite(ledRed, HIGH); // lampu merah nyala
     // Serial.println("Mundur");
   } else {
     if (funcDistanceLeft() > funcDistanceRight()) {
@@ -81,7 +91,7 @@ void loop() {
   }
 }
 
-int funcDistanceFront() { // fungsi untuk mengambil jarak sensor depan
+int funcDistanceFront() {  // fungsi untuk mengambil jarak sensor depan
   digitalWrite(triggerDepan, LOW);
   delayMicroseconds(2);
   digitalWrite(triggerDepan, HIGH);
@@ -92,7 +102,7 @@ int funcDistanceFront() { // fungsi untuk mengambil jarak sensor depan
   return (durationDepan / 2) / 29.1;
 }
 
-int funcDistanceRight() { // fungsi untuk mengambil jarak sensor kanan
+int funcDistanceRight() {  // fungsi untuk mengambil jarak sensor kanan
   digitalWrite(triggerKanan, LOW);
   delayMicroseconds(2);
   digitalWrite(triggerKanan, HIGH);
@@ -103,7 +113,7 @@ int funcDistanceRight() { // fungsi untuk mengambil jarak sensor kanan
   return (durationKanan / 2) / 29.1;
 }
 
-int funcDistanceLeft() { // fungsi untuk mengambil jarak sensor kiri
+int funcDistanceLeft() {  // fungsi untuk mengambil jarak sensor kiri
   digitalWrite(triggerKiri, LOW);
   delayMicroseconds(2);
   digitalWrite(triggerKiri, HIGH);
